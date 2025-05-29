@@ -1,5 +1,6 @@
 #include <print>
 #include <random>
+#include <list>
 #include <vector>
 
 #include <raylib.h>
@@ -32,7 +33,11 @@ public:
 
 class Game {
     Player m_player;
-    std::vector<Particle> m_particles;
+    // Using std::list for storing the particles as out-of-bounds particles
+    // will have to be removed frequently. A queue is not sufficient, as
+    // particles have different speeds, and ones queued up early, might live longer
+    // than ones queued up at a later time.
+    std::list<Particle> m_particles;
     Timer m_timer;
     static constexpr Rectangle m_screen = { 0, 0, 1600, 900 };
 
@@ -114,20 +119,25 @@ public:
         auto str_particles = std::format("Particles: {}", m_particles.size());
         DrawText(str_particles.c_str(), 0, 100, 50, WHITE);
 
-
         m_player.draw();
         m_player.draw_healthbar({ m_screen.width/2.0, 0.0 }, RED, GRAY);
 
-        for (auto &particle : m_particles) {
-            m_player.check_collision(particle);
-            particle.draw();
-            particle.update();
+        for (auto p=m_particles.begin(); p != m_particles.end();) {
+            m_player.check_collision(*p);
+            p->draw();
+            p->update();
+
+            if (!CheckCollisionCircleRec(p->position(), p->radius(), m_screen)) {
+                p = m_particles.erase(p);
+            } else {
+                p++;
+            }
         }
+
     }
 
     void state_running() {
 
-        // TODO: clear non-live particles
         if (m_timer.poll()) {
             Particle particle({ m_screen.width/2.0, m_screen.height/2.0 });
             m_particles.push_back(particle);

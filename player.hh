@@ -56,22 +56,28 @@ public:
 
     void move(Direction dir) {
         float step = 5;
-        // TODO: clamp player position to screen bounds
 
         switch (dir) {
-            case Direction::Left: {
+            case Direction::Left:
                 m_position.x -= step;
-            } break;
-            case Direction::Right: {
+                break;
+
+            case Direction::Right:
                 m_position.x += step;
-            } break;
-            case Direction::Up: {
+                break;
+
+            case Direction::Up:
                 m_position.y -= step;
-            } break;
-            case Direction::Down: {
+                break;
+
+            case Direction::Down:
                 m_position.y += step;
-            } break;
+                break;
         }
+
+        m_position.x = std::clamp(m_position.x, m_screen.x, m_screen.width);
+        m_position.y = std::clamp(m_position.y, m_screen.y, m_screen.height);
+
     }
 
     void check_collision(Particle &particle) {
