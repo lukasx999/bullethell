@@ -48,7 +48,7 @@ public:
 
     Game()
         : m_player({ m_width/4.0, m_height/4.0 }, 20, 500)
-        , m_timer(0.01)
+        , m_timer(0.0001)
     {
         SetTargetFPS(60);
         InitWindow(m_width, m_height, "bullethell");
@@ -58,7 +58,39 @@ public:
         CloseWindow();
     }
 
-    void handle_input() {
+    void handle_input_welcome() {
+        if (IsKeyPressed(KEY_SPACE))
+            m_state = State::Running;
+    }
+
+    void draw_welcome() {
+        DrawText("Welcome!", 0, 0, 50, RED);
+        handle_input_welcome();
+    }
+
+    void handle_input_dead() {
+        if (IsKeyPressed(KEY_SPACE)) {
+            m_state = State::Welcome;
+            m_player.reset();
+        }
+    }
+
+    void draw_dead() {
+        DrawText("You Died!", 0, 0, 50, RED);
+        handle_input_dead();
+    }
+
+    void handle_input_paused() {
+        if (IsKeyPressed(KEY_SPACE))
+            m_state = State::Running;
+    }
+
+    void draw_paused() {
+        DrawText("Paused.", 0, 0, 50, RED);
+        handle_input_paused();
+    }
+
+    void handle_input_running() {
         if (IsKeyDown(KEY_J) || IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))
             m_player.move(Direction::Down);
 
@@ -75,30 +107,15 @@ public:
             m_state = State::Paused;
     }
 
-    void draw_welcome() {
-        DrawText("Welcome!", 0, 0, 50, RED);
-        if (IsKeyPressed(KEY_SPACE))
-            m_state = State::Running;
-    }
-
-    void draw_dead() {
-        DrawText("You Died!", 0, 0, 50, RED);
-        if (IsKeyPressed(KEY_SPACE)) {
-            m_state = State::Welcome;
-            m_player.reset();
-        }
-    }
-
-    void draw_paused() {
-        DrawText("Paused.", 0, 0, 50, RED);
-        if (IsKeyPressed(KEY_SPACE))
-            m_state = State::Running;
-    }
-
     void draw_running() {
 
-        auto str = std::format("Health: {}", m_player.health());
-        DrawText(str.c_str(), 0, 0, 50, WHITE);
+        DrawFPS(0, 0);
+
+        auto str_health = std::format("Health: {}", m_player.health());
+        DrawText(str_health.c_str(), 0, 50, 50, WHITE);
+
+        auto str_particles = std::format("Particles: {}", m_particles.size());
+        DrawText(str_particles.c_str(), 0, 100, 50, WHITE);
 
         if (m_timer.poll()) {
             Particle particle({ m_width/2.0, m_height/2.0 });
@@ -118,7 +135,7 @@ public:
         m_player.draw();
         m_player.draw_healthbar({ m_width/2.0, 0.0 }, RED, GRAY);
 
-        handle_input();
+        handle_input_running();
 
     }
 
