@@ -32,7 +32,23 @@ public:
 
 };
 
-class Game {
+
+enum class GameState {
+    Running,
+    Paused,
+    Dead,
+    Welcome,
+};
+
+class IGameState {
+public:
+    virtual void draw() = 0;
+};
+
+
+
+class GameRunning : public IGameState {
+    const Rectangle m_screen;
     Player m_player;
     // Using std::list for storing the projectiles as out-of-bounds projectiles
     // will have to be removed frequently. A queue is not sufficient, as
@@ -40,61 +56,21 @@ class Game {
     // than ones queued up at a later time.
     std::list<Projectile> m_projectiles;
     AsyncTimer m_timer;
-    static constexpr Rectangle m_screen = { 0, 0, 1600, 900 };
-
-    enum class State {
-        Running,
-        Paused,
-        Dead,
-        Welcome,
-    } m_state = State::Welcome;
+    GameState &m_state;
 
 public:
 
-    Game()
-        : m_player({ m_screen.width/4.0, m_screen.height/4.0 }, 20, 500, m_screen)
+    GameRunning(Rectangle screen, GameState &state)
+        : m_screen(screen)
+        , m_player(
+            { static_cast<float>(m_screen.width/4.0), static_cast<float>(m_screen.height/4.0) },
+            20,
+            500,
+            m_screen
+        )
         , m_timer(0.0001)
-    {
-        SetTraceLogLevel(LOG_ERROR);
-        SetTargetFPS(60);
-        InitWindow(m_screen.width, m_screen.height, "bullethell");
-    }
-
-    ~Game() {
-        CloseWindow();
-    }
-
-    void handle_input_welcome() {
-        if (IsKeyPressed(KEY_SPACE))
-            m_state = State::Running;
-    }
-
-    void draw_welcome() {
-        DrawText("Welcome!", 0, 0, 50, RED);
-        handle_input_welcome();
-    }
-
-    void handle_input_dead() {
-        if (IsKeyPressed(KEY_SPACE)) {
-            m_state = State::Welcome;
-            m_player.reset();
-        }
-    }
-
-    void draw_dead() {
-        DrawText("You Died!", 0, 0, 50, RED);
-        handle_input_dead();
-    }
-
-    void handle_input_paused() {
-        if (IsKeyPressed(KEY_SPACE))
-            m_state = State::Running;
-    }
-
-    void draw_paused() {
-        DrawText("Paused.", 0, 0, 50, RED);
-        handle_input_paused();
-    }
+        , m_state(state)
+    { }
 
     void handle_input_running() {
         if (IsKeyDown(KEY_J) || IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))
@@ -110,7 +86,7 @@ public:
             m_player.move(Direction::Right);
 
         if (IsKeyPressed(KEY_P))
-            m_state = State::Paused;
+            m_state = GameState::Paused;
     }
 
     void draw_ui() {
@@ -121,7 +97,11 @@ public:
         auto str_particles = std::format("Particles: {}", m_projectiles.size());
         DrawText(str_particles.c_str(), 0, 100, 50, WHITE);
 
-        m_player.draw_healthbar({ m_screen.width/2.0, 0.0 }, RED, GRAY);
+        m_player.draw_healthbar(
+            { static_cast<float>(m_screen.width/2.0), 0.0 },
+            RED,
+            GRAY
+        );
     }
 
     void draw_running() {
@@ -156,14 +136,14 @@ public:
 
     }
 
-    void state_running() {
+    void draw() override {
 
         if (m_timer.poll()) {
 
             int random = random_range(1, 15);
 
             Projectile p(
-                { m_screen.width/2.0, m_screen.height/2.0 },
+                { static_cast<float>(m_screen.width/2.0), static_cast<float>(m_screen.height/2.0) },
                 m_screen,
                 random == 1
                 ? ProjectileType::Health
@@ -174,29 +154,109 @@ public:
         }
 
         if (!m_player.is_alive()) {
-            m_state = State::Dead;
+            m_state = GameState::Dead;
+            m_player.reset();
         }
 
         draw_running();
         handle_input_running();
     }
 
+};
+
+class GamePaused : public IGameState {
+    GameState &m_state;
+public:
+    GamePaused(GameState &state) : m_state(state) { }
+
+    void handle_input_paused() {
+        if (IsKeyPressed(KEY_SPACE))
+            m_state = GameState::Running;
+    }
+
+    void draw() override {
+        DrawText("Paused.", 0, 0, 50, RED);
+        handle_input_paused();
+    }
+
+};
+
+class GameWelcome : public IGameState {
+    GameState &m_state;
+public:
+    GameWelcome(GameState &state) : m_state(state) { }
+
+    void handle_input_welcome() {
+        if (IsKeyPressed(KEY_SPACE))
+            m_state = GameState::Running;
+    }
+
+    void draw() override {
+        DrawText("Welcome!", 0, 0, 50, RED);
+        handle_input_welcome();
+    }
+};
+
+class GameOver : public IGameState {
+    GameState &m_state;
+public:
+    GameOver(GameState &state) : m_state(state) { }
+
+    void handle_input_dead() {
+        if (IsKeyPressed(KEY_SPACE)) {
+            m_state = GameState::Welcome;
+        }
+    }
+
+    void draw() override {
+        DrawText("You Died!", 0, 0, 50, RED);
+        handle_input_dead();
+    }
+};
+
+
+class Game {
+    GameRunning m_running;
+    GameWelcome m_welcome;
+    GamePaused m_paused;
+    GameOver m_dead;
+    GameState m_state = GameState::Welcome;
+    static constexpr Rectangle m_screen = { 0, 0, 1600, 900 };
+
+public:
+
+    Game()
+        : m_running(m_screen, m_state)
+        , m_welcome(m_state)
+        , m_paused(m_state)
+        , m_dead(m_state)
+    {
+        SetTraceLogLevel(LOG_ERROR);
+        SetTargetFPS(60);
+        InitWindow(m_screen.width, m_screen.height, "bullethell");
+    }
+
+    ~Game() {
+        CloseWindow();
+    }
+
     void draw() {
+        // TODO: consider hashmap of states to classes
         switch (m_state) {
-            case State::Running:
-                state_running();
+            case GameState::Running:
+                m_running.draw();
                 break;
 
-            case State::Paused:
-                draw_paused();
+            case GameState::Paused:
+                m_paused.draw();
                 break;
 
-            case State::Dead:
-                draw_dead();
+            case GameState::Dead:
+                m_dead.draw();
                 break;
 
-            case State::Welcome:
-                draw_welcome();
+            case GameState::Welcome:
+                m_welcome.draw();
                 break;
         }
     }
