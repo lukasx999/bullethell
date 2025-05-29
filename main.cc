@@ -184,6 +184,18 @@ public:
 
 
 
+// TODO:
+/*
+    particle kinds:
+    - hostile
+    - healing
+    - parryable
+
+    particle sources:
+    - spreading
+    - homing
+*/
+
 int main() {
 
     Game game;
