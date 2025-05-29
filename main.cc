@@ -34,8 +34,7 @@ class Game {
     Player m_player;
     std::vector<Particle> m_particles;
     Timer m_timer;
-    static constexpr int m_width = 1600;
-    static constexpr int m_height = 900;
+    static constexpr Rectangle m_screen = { 0, 0, 1600, 900 };
 
     enum class State {
         Running,
@@ -47,11 +46,11 @@ class Game {
 public:
 
     Game()
-        : m_player({ m_width/4.0, m_height/4.0 }, 20, 500)
+        : m_player({ m_screen.width/4.0, m_screen.height/4.0 }, 20, 500, m_screen)
         , m_timer(0.0001)
     {
         SetTargetFPS(60);
-        InitWindow(m_width, m_height, "bullethell");
+        InitWindow(m_screen.width, m_screen.height, "bullethell");
     }
 
     ~Game() {
@@ -108,41 +107,44 @@ public:
     }
 
     void draw_running() {
-
         DrawFPS(0, 0);
-
         auto str_health = std::format("Health: {}", m_player.health());
         DrawText(str_health.c_str(), 0, 50, 50, WHITE);
 
         auto str_particles = std::format("Particles: {}", m_particles.size());
         DrawText(str_particles.c_str(), 0, 100, 50, WHITE);
 
-        if (m_timer.poll()) {
-            Particle particle({ m_width/2.0, m_height/2.0 });
-            m_particles.push_back(particle);
-        }
+
+        m_player.draw();
+        m_player.draw_healthbar({ m_screen.width/2.0, 0.0 }, RED, GRAY);
 
         for (auto &particle : m_particles) {
             m_player.check_collision(particle);
             particle.draw();
             particle.update();
         }
+    }
+
+    void state_running() {
+
+        // TODO: clear non-live particles
+        if (m_timer.poll()) {
+            Particle particle({ m_screen.width/2.0, m_screen.height/2.0 });
+            m_particles.push_back(particle);
+        }
 
         if (!m_player.is_alive()) {
             m_state = State::Dead;
         }
 
-        m_player.draw();
-        m_player.draw_healthbar({ m_width/2.0, 0.0 }, RED, GRAY);
-
+        draw_running();
         handle_input_running();
-
     }
 
     void draw() {
         switch (m_state) {
             case State::Running:
-                draw_running();
+                state_running();
                 break;
             case State::Paused:
                 draw_paused();

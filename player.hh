@@ -19,17 +19,19 @@ class Player {
     int m_health;
     const Vector2 m_start_position;
     const int m_max_health;
+    const Rectangle m_screen;
 
 public:
     static constexpr int m_healtbar_width = 500;
     static constexpr int m_healtbar_height = 30;
 
-    Player(Vector2 position, float radius, int max_health)
+    Player(Vector2 position, float radius, int max_health, Rectangle screen)
         : m_position(position)
         , m_radius(radius)
         , m_health(max_health)
         , m_start_position(position)
         , m_max_health(max_health)
+        , m_screen(screen)
     { }
 
     void reset() {
@@ -54,6 +56,8 @@ public:
 
     void move(Direction dir) {
         float step = 5;
+        // TODO: clamp player position to screen bounds
+
         switch (dir) {
             case Direction::Left: {
                 m_position.x -= step;
