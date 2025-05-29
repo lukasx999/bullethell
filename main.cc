@@ -9,18 +9,38 @@
 #include "particle.hh"
 
 
+class Timer {
+    double m_delay_secs;
+    double m_time_threshold = 0;
+public:
+
+    Timer(double delay_secs)
+    : m_delay_secs(delay_secs)
+    { }
+
+    bool poll() {
+        double time = GetTime();
+        bool ellapsed = time >= m_time_threshold;
+
+        if (ellapsed)
+            m_time_threshold = time + m_delay_secs;
+
+        return ellapsed;
+    }
+
+};
 
 class Game {
     Player m_player;
     std::vector<Particle> m_particles;
+    Timer m_timer;
     static constexpr int m_width = 1600;
     static constexpr int m_height = 900;
-    double m_time_threshold = 0;
-    double m_delay_secs = 0.01;
 public:
 
     Game()
     : m_player({ m_width/4.0, m_height/4.0 }, 20, 500)
+    , m_timer(0.01)
     {
         SetTargetFPS(60);
         InitWindow(m_width, m_height, "bullethell");
@@ -54,12 +74,9 @@ public:
         auto str = std::format("Health: {}", m_player.health());
         DrawText(str.c_str(), 0, 0, 50, WHITE);
 
-        if (GetTime() >= m_time_threshold) {
-
+        if (m_timer.poll()) {
             Particle particle({ m_width/2.0, m_height/2.0 });
             m_particles.push_back(particle);
-
-            m_time_threshold = GetTime() + m_delay_secs;
         }
 
         for (auto &particle : m_particles) {
