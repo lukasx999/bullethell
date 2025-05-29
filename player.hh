@@ -17,6 +17,7 @@ class Player {
     Vector2 m_position;
     float m_radius;
     int m_health;
+    const Vector2 m_start_position;
     const int m_max_health;
 
 public:
@@ -27,8 +28,14 @@ public:
         : m_position(position)
         , m_radius(radius)
         , m_health(max_health)
+        , m_start_position(position)
         , m_max_health(max_health)
     { }
+
+    void reset() {
+        m_health = m_max_health;
+        m_position = m_start_position;
+    }
 
     [[nodiscard]] bool is_alive() const {
         return m_health > 0;

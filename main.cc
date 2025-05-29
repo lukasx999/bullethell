@@ -36,11 +36,19 @@ class Game {
     Timer m_timer;
     static constexpr int m_width = 1600;
     static constexpr int m_height = 900;
+
+    enum class State {
+        Running,
+        Paused,
+        Dead,
+        Welcome,
+    } m_state = State::Welcome;
+
 public:
 
     Game()
-    : m_player({ m_width/4.0, m_height/4.0 }, 20, 500)
-    , m_timer(0.01)
+        : m_player({ m_width/4.0, m_height/4.0 }, 20, 500)
+        , m_timer(0.01)
     {
         SetTargetFPS(60);
         InitWindow(m_width, m_height, "bullethell");
@@ -62,11 +70,33 @@ public:
 
         if (IsKeyDown(KEY_L) || IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
             m_player.move(Direction::Right);
+
+        if (IsKeyPressed(KEY_P))
+            m_state = State::Paused;
     }
 
-    void draw() {
+    void draw_welcome() {
+        DrawText("Welcome!", 0, 0, 50, RED);
+        if (IsKeyPressed(KEY_SPACE))
+            m_state = State::Running;
+    }
 
-        ClearBackground(BLACK);
+    void draw_dead() {
+        DrawText("You Died!", 0, 0, 50, RED);
+        if (IsKeyPressed(KEY_SPACE)) {
+            m_state = State::Welcome;
+            m_player.reset();
+        }
+    }
+
+    void draw_paused() {
+        DrawText("Paused.", 0, 0, 50, RED);
+        if (IsKeyPressed(KEY_SPACE))
+            m_state = State::Running;
+    }
+
+    void draw_running() {
+
         auto str = std::format("Health: {}", m_player.health());
         DrawText(str.c_str(), 0, 0, 50, WHITE);
 
@@ -82,8 +112,7 @@ public:
         }
 
         if (!m_player.is_alive()) {
-            std::println("u dead.");
-            exit(1);
+            m_state = State::Dead;
         }
 
         m_player.draw();
@@ -93,11 +122,31 @@ public:
 
     }
 
+    void draw() {
+        switch (m_state) {
+            case State::Running:
+                draw_running();
+                break;
+            case State::Paused:
+                draw_paused();
+                break;
+            case State::Dead:
+                draw_dead();
+                break;
+            case State::Welcome:
+                draw_welcome();
+                break;
+        }
+    }
+
     void loop() {
 
         while (!WindowShouldClose()) {
             BeginDrawing();
-            draw();
+            {
+                ClearBackground(BLACK);
+                draw();
+            }
             EndDrawing();
         }
     }
