@@ -7,15 +7,16 @@
 #include <raymath.h>
 
 #include "player.hh"
-#include "particle.hh"
+#include "projectile.hh"
+#include "util.hh"
 
 
-class Timer {
+class AsyncTimer {
     double m_delay_secs;
     double m_time_threshold = 0;
 public:
 
-    Timer(double delay_secs)
+    AsyncTimer(double delay_secs)
     : m_delay_secs(delay_secs)
     { }
 
@@ -33,12 +34,12 @@ public:
 
 class Game {
     Player m_player;
-    // Using std::list for storing the particles as out-of-bounds particles
+    // Using std::list for storing the projectiles as out-of-bounds projectiles
     // will have to be removed frequently. A queue is not sufficient, as
-    // particles have different speeds, and ones queued up early, might live longer
+    // projectiles have different speeds, and ones queued up early, might live longer
     // than ones queued up at a later time.
-    std::list<Particle> m_particles;
-    Timer m_timer;
+    std::list<Projectile> m_projectiles;
+    AsyncTimer m_timer;
     static constexpr Rectangle m_screen = { 0, 0, 1600, 900 };
 
     enum class State {
@@ -54,6 +55,7 @@ public:
         : m_player({ m_screen.width/4.0, m_screen.height/4.0 }, 20, 500, m_screen)
         , m_timer(0.0001)
     {
+        SetTraceLogLevel(LOG_ERROR);
         SetTargetFPS(60);
         InitWindow(m_screen.width, m_screen.height, "bullethell");
     }
@@ -111,36 +113,64 @@ public:
             m_state = State::Paused;
     }
 
-    void draw_running() {
+    void draw_ui() {
         DrawFPS(0, 0);
         auto str_health = std::format("Health: {}", m_player.health());
         DrawText(str_health.c_str(), 0, 50, 50, WHITE);
 
-        auto str_particles = std::format("Particles: {}", m_particles.size());
+        auto str_particles = std::format("Particles: {}", m_projectiles.size());
         DrawText(str_particles.c_str(), 0, 100, 50, WHITE);
 
-        m_player.draw();
         m_player.draw_healthbar({ m_screen.width/2.0, 0.0 }, RED, GRAY);
+    }
 
-        for (auto p=m_particles.begin(); p != m_particles.end();) {
-            m_player.check_collision(*p);
+    void draw_running() {
+
+        for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
+
+            if (m_player.check_collision(*p)) {
+                switch (p->m_type) {
+                    case ProjectileType::Hostile:
+                        m_player.damage();
+                        break;
+                    case ProjectileType::Health:
+                        m_player.heal();
+                        break;
+                }
+            }
+
             p->draw();
             p->update();
 
-            if (!CheckCollisionCircleRec(p->position(), p->radius(), m_screen)) {
-                p = m_particles.erase(p);
+            if (!p->is_live()) {
+                p = m_projectiles.erase(p);
+
             } else {
                 p++;
             }
+
         }
+
+        m_player.draw();
+        draw_ui();
 
     }
 
     void state_running() {
 
         if (m_timer.poll()) {
-            Particle particle({ m_screen.width/2.0, m_screen.height/2.0 });
-            m_particles.push_back(particle);
+
+            int random = random_range(1, 15);
+
+            Projectile p(
+                { m_screen.width/2.0, m_screen.height/2.0 },
+                m_screen,
+                random == 1
+                ? ProjectileType::Health
+                : ProjectileType::Hostile
+            );
+
+            m_projectiles.push_back(p);
         }
 
         if (!m_player.is_alive()) {
@@ -156,12 +186,15 @@ public:
             case State::Running:
                 state_running();
                 break;
+
             case State::Paused:
                 draw_paused();
                 break;
+
             case State::Dead:
                 draw_dead();
                 break;
+
             case State::Welcome:
                 draw_welcome();
                 break;
@@ -186,12 +219,12 @@ public:
 
 // TODO:
 /*
-    particle kinds:
+    projectile kinds:
     - hostile
     - healing
     - parryable
 
-    particle sources:
+    projectile sources:
     - spreading
     - homing
 */

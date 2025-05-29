@@ -4,7 +4,7 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#include "particle.hh"
+#include "projectile.hh"
 
 enum class Direction {
     Left,
@@ -20,6 +20,8 @@ class Player {
     const Vector2 m_start_position;
     const int m_max_health;
     const Rectangle m_screen;
+    static constexpr int m_heal_amount = 50;
+    static constexpr int m_damage_amount = 1;
 
 public:
     static constexpr int m_healtbar_width = 500;
@@ -80,10 +82,16 @@ public:
 
     }
 
-    void check_collision(Particle &particle) {
-        if (CheckCollisionCircles(m_position, m_radius, particle.position(), particle.radius())) {
-            m_health -= 1;
-        }
+    void damage() {
+        m_health -= m_damage_amount;
+    }
+
+    void heal() {
+        m_health = std::min(m_health+m_heal_amount, m_max_health);
+    }
+
+    [[nodiscard]] bool check_collision(const Projectile &particle) const {
+        return CheckCollisionCircles(m_position, m_radius, particle.m_position, particle.m_radius);
     }
 
     [[nodiscard]] int health() const {

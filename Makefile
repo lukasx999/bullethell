@@ -1,9 +1,9 @@
 CXX=c++
 CXXFLAGS=-Wall -Wextra -std=c++23 -pedantic -ggdb -Og
 LIBS=-lraylib
-DEPS=particle.hh player.hh
+DEPS=projectile.hh player.hh util.hh
 
-bullethell: main.o particle.o player.o
+bullethell: main.o projectile.o player.o
 	$(CXX) $(CXXFLAGS) $(LIBS) $^ -o $@
 
 run: bullethell
