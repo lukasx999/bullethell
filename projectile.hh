@@ -4,18 +4,18 @@
 
 #include <raylib.h>
 
+#include "util.hh"
+
 enum class ProjectileType {
     Hostile,
     Health,
 };
 
 class Projectile {
+    const Rectangle &m_screen;
     Vector2 m_velocity;
-    float m_fade_timer = 0.0;
-    const Rectangle m_screen;
-    static constexpr float m_fade_max = 1.0;
-    static constexpr float m_fade_step = 0.1;
-    static constexpr float m_fade_radius_multiplier = 1.5;
+    Timer m_timer{1.0, 0.1};
+    static constexpr float m_fade_radius_multiplier = 2;
     enum class ProjectileState {
         Live,
         Fading,
@@ -31,8 +31,9 @@ public:
     float m_radius;
     const ProjectileType m_type;
 
-    Projectile(Vector2 origin, Rectangle screen, ProjectileType type);
+    Projectile(Vector2 origin, ProjectileType type, const Rectangle &screen);
     void update();
+    [[nodiscard]] bool is_dead() const;
     [[nodiscard]] bool is_alive() const;
     void destroy();
 

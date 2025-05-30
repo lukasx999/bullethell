@@ -4,13 +4,13 @@
 
 #include "player.hh"
 
-Player::Player(Vector2 position, float radius, int max_health, Rectangle screen)
-    : m_position(position)
+Player::Player(Vector2 position, float radius, int max_health, const Rectangle &screen)
+    : m_screen(screen)
+    , m_position(position)
     , m_radius(radius)
     , m_health(max_health)
     , m_start_position(position)
     , m_max_health(max_health)
-    , m_screen(screen)
 { }
 
 void Player::reset() {
@@ -50,8 +50,8 @@ void Player::move(Direction dir) {
             break;
     }
 
-    m_position.x = std::clamp(m_position.x, m_screen.x, m_screen.width);
-    m_position.y = std::clamp(m_position.y, m_screen.y, m_screen.height);
+    m_position.x = std::clamp(m_position.x, 0.0f, static_cast<float>(m_screen.width));
+    m_position.y = std::clamp(m_position.y, 0.0f, static_cast<float>(m_screen.height));
 
 }
 
