@@ -19,7 +19,7 @@ class Player {
     const Vector2 m_start_position;
     const int m_max_health;
     static constexpr int m_heal_amount = 50;
-    static constexpr int m_damage_amount = 0; // TODO: change me back to 1
+    static constexpr int m_damage_amount = 1; // TODO: change me back to 1
 
 public:
     static constexpr int m_healtbar_width = 500;
