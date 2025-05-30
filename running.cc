@@ -12,8 +12,9 @@ GameRunning::GameRunning(GameState &state, const Rectangle &screen)
 
 void GameRunning::update() {
 
-    if (m_interval.poll())
-        spawn_projectile();
+    // if (IsKeyPressed(KEY_U))
+        if (m_interval.poll())
+            spawn_projectile();
 
     if (!m_player.is_alive()) {
         m_state = GameState::Dead;

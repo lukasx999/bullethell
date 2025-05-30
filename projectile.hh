@@ -14,8 +14,9 @@ enum class ProjectileType {
 class Projectile {
     const Rectangle &m_screen;
     Vector2 m_velocity;
-    Timer m_timer{1.0, 0.1};
-    static constexpr float m_fade_radius_multiplier = 2;
+    Timer m_timer { 1.0, 0.1 };
+    static constexpr float m_fade_radius_multiplier = 1.5;
+    Texture2D m_texture;
     enum class ProjectileState {
         Live,
         Fading,
