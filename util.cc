@@ -1,6 +1,6 @@
 #include "util.hh"
 
-#include <raylib.h>
+#include <raylib-cpp.hpp>
 
 Interval::Interval(double delay_secs)
 : m_delay_secs(delay_secs)

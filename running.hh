@@ -2,8 +2,7 @@
 
 #include <list>
 
-#include <raylib.h>
-#include <raymath.h>
+#include <raylib-cpp.hpp>
 
 #include "player.hh"
 #include "projectile.hh"

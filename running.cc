@@ -1,6 +1,8 @@
 #include <print>
 #include <format>
 
+#include <raylib-cpp.hpp>
+
 #include "running.hh"
 
 GameRunning::GameRunning(GameState &state, const Rectangle &screen)
@@ -28,8 +30,8 @@ void GameRunning::spawn_projectile() {
     int random = random_range(1, 15);
 
     Projectile proj(
-        { m_screen.width/2.0f, m_screen.height/2.0f },
-        { random_range(-5.0f, 5.0f), random_range(-5.0f, 5.0f) },
+        raylib::Vector2(m_screen.width/2.0f, m_screen.height/2.0f),
+        raylib::Vector2(random_range(-5.0f, 5.0f), random_range(-5.0f, 5.0f)),
         random == 1
         ? ProjectileType::Health
         : ProjectileType::Hostile,
@@ -42,33 +44,33 @@ void GameRunning::spawn_projectile() {
 
 void GameRunning::draw() {
 
-    for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
-
-        p->update();
-
-        if (m_player.check_collision(*p) && p->is_alive()) {
-            switch (p->m_type) {
-                case ProjectileType::Hostile:
-                    m_player.damage();
-                    break;
-
-                case ProjectileType::Health:
-                    m_player.heal();
-                    break;
-
-                case ProjectileType::Bullet:
-                    ;
-                    break;
-            }
-            p->destroy();
-        }
-
-        if (p->is_dead())
-            p = m_projectiles.erase(p);
-        else
-            p++;
-
-    }
+    // for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
+    //
+    //     p->update();
+    //
+    //     if (m_player.check_collision(*p) && p->is_alive()) {
+    //         switch (p->m_type) {
+    //             case ProjectileType::Hostile:
+    //                 m_player.damage();
+    //                 break;
+    //
+    //             case ProjectileType::Health:
+    //                 m_player.heal();
+    //                 break;
+    //
+    //             case ProjectileType::Bullet:
+    //                 ;
+    //                 break;
+    //         }
+    //         p->destroy();
+    //     }
+    //
+    //     if (p->is_dead())
+    //         p = m_projectiles.erase(p);
+    //     else
+    //         p++;
+    //
+    // }
 
     m_player.update();
     draw_ui();

@@ -1,34 +1,40 @@
 #include <print>
 
-#include <raylib.h>
-#include <raymath.h>
+#include <raylib-cpp.hpp>
 
 #include "projectile.hh"
 #include "util.hh"
 
-Projectile::Projectile(Vector2 origin, Vector2 velocity, ProjectileType type, const Rectangle &screen, float radius)
+
+Projectile::Projectile(
+    raylib::Vector2 origin,
+    raylib::Vector2 velocity,
+    ProjectileType type,
+    const raylib::Rectangle &screen,
+    float radius
+)
     : m_screen(screen)
     , m_velocity(velocity)
-    , m_texture(LoadTexture("./assets/circle6a.png"))
     , m_position(origin)
     , m_radius(radius)
     , m_type(type)
 {
-    GenTextureMipmaps(&m_texture);
+    m_texture.Load("./assets/circle6a.png");
+    m_texture.GenMipmaps();
 }
 
 void Projectile::draw_live() {
-    Color color = m_state_map.at(m_type);
+    raylib::Color color = m_state_map.at(m_type);
 
     // draw the texture onto a circle, such that the edges of the texture
     // dont cover any over projectiles on the screen
-    DrawCircleV(m_position, m_radius, BLACK);
+    m_position.DrawCircle(m_radius, BLACK);
     BeginBlendMode(BLEND_ADDITIVE);
     {
-        Rectangle src    = { 0.0, 0.0, static_cast<float>(m_texture.width), static_cast<float>(m_texture.height) };
-        Rectangle dest   = { m_position.x, m_position.y, m_radius * 2.0f, m_radius * 2.0f };
-        Vector2   origin = { m_radius, m_radius };
-        DrawTexturePro(m_texture, src, dest, origin, 0, color);
+        raylib::Rectangle src    = { 0.0, 0.0, static_cast<float>(m_texture.width), static_cast<float>(m_texture.height) };
+        raylib::Rectangle dest   = { m_position.x, m_position.y, m_radius * 2.0f, m_radius * 2.0f };
+        raylib::Vector2   origin = { m_radius, m_radius };
+        m_texture.Draw(src, dest, origin, 0, color);
     }
     EndBlendMode();
 }
@@ -43,7 +49,7 @@ void Projectile::draw_fading() {
     );
     color.a = Lerp(color.a, 0, m_timer.time());
 
-    DrawCircleV(m_position, radius, color);
+    m_position.DrawCircle(radius, color);
 }
 
 void Projectile::update() {
@@ -58,13 +64,14 @@ void Projectile::update() {
         case ProjectileState::Live: {
             draw_live();
 
-            Rectangle screen = {
+            raylib::Rectangle screen = {
                 0.0,
                 0.0,
-                static_cast<float>(m_screen.width),
-                static_cast<float>(m_screen.height),
+                m_screen.width,
+                m_screen.height,
             };
-            if (!CheckCollisionCircleRec(m_position, m_radius, screen))
+
+            if (!m_position.CheckCollisionCircle(m_radius, screen))
                 m_state = ProjectileState::Dead;
 
         } break;

@@ -4,14 +4,11 @@
 #include <vector>
 #include <unordered_map>
 
-#include <raylib.h>
-#include <raymath.h>
+#include <raylib-cpp.hpp>
 
 #include "game.hh"
 #include "running.hh"
-#include "welcome.hh"
-#include "over.hh"
-#include "paused.hh"
+#include "states.hh"
 
 
 class Game {
@@ -21,6 +18,7 @@ class Game {
     GamePaused m_paused;
     GameOver m_dead;
     GameState m_state = GameState::Welcome;
+    raylib::Window m_window;
     // passing a reference to this to all subclasses so they can adjust to
     // screen dimension changes
     std::unordered_map<GameState, IGameState&> m_state_map {
@@ -45,21 +43,19 @@ Game::Game()
     , m_welcome(m_state)
     , m_paused(m_state)
     , m_dead(m_state)
+    , m_window(m_screen.width, m_screen.height, "bullethell")
 {
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    m_window.SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTraceLogLevel(LOG_ERROR);
-    SetTargetFPS(
-        60
-    );
-    InitWindow(m_screen.width, m_screen.height, "bullethell");
+    m_window.SetTargetFPS(60);
 }
 
 Game::~Game() {
-    CloseWindow();
+    m_window.Close();
 }
 
 void Game::loop() {
-    while (!WindowShouldClose()) {
+    while (!m_window.ShouldClose()) {
         BeginDrawing();
         {
             m_screen.width = GetScreenWidth();

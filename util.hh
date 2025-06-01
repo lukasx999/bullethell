@@ -2,7 +2,6 @@
 
 #include <random>
 
-#include <raylib.h>
 
 
 template <typename T>

@@ -1,12 +1,10 @@
 CXX=c++
-CXXFLAGS=-Wall -Wextra -std=c++23 -pedantic -ggdb -Og
+CXXFLAGS=-Wall -Wextra -std=c++23 -pedantic -ggdb -Og -I./raylib-cpp/include/
 LIBS=-lraylib
 
 DEPS=projectile.hh       \
      player.hh           \
-     welcome.hh          \
-     paused.hh           \
-     over.hh             \
+     states.hh           \
      running.hh          \
      util.hh             \
      game.hh
@@ -14,9 +12,7 @@ DEPS=projectile.hh       \
 OBJ=main.o               \
     projectile.o         \
     player.o             \
-    welcome.o            \
-    paused.o             \
-    over.o               \
+    states.o             \
     running.o            \
     util.o
 
