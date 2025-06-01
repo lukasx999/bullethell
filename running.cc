@@ -5,12 +5,21 @@
 
 #include "running.hh"
 
-GameRunning::GameRunning(GameState &state, const Rectangle &screen)
+GameRunning::GameRunning(GameState &state, const raylib::Rectangle &screen)
     : m_screen(screen)
-    , m_player({ m_screen.width/4.0f, m_screen.height/4.0f }, 20, 500, m_screen)
+    , m_player(
+        raylib::Vector2(m_screen.width/4.0f, m_screen.height/4.0f),
+        20,
+        500,
+        m_projectile_texture,
+        m_screen
+    )
     , m_interval(0.001)
     , m_state(state)
-{ }
+{
+    m_projectile_texture.Load("./assets/circle6a.png");
+    m_projectile_texture.GenMipmaps();
+}
 
 void GameRunning::update() {
 
@@ -33,8 +42,9 @@ void GameRunning::spawn_projectile() {
         raylib::Vector2(m_screen.width/2.0f, m_screen.height/2.0f),
         raylib::Vector2(random_range(-5.0f, 5.0f), random_range(-5.0f, 5.0f)),
         random == 1
-        ? ProjectileType::Health
-        : ProjectileType::Hostile,
+            ? ProjectileType::Health
+            : ProjectileType::Hostile,
+        m_projectile_texture,
         m_screen,
         random_range(10, 30)
     );
@@ -44,33 +54,33 @@ void GameRunning::spawn_projectile() {
 
 void GameRunning::draw() {
 
-    // for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
-    //
-    //     p->update();
-    //
-    //     if (m_player.check_collision(*p) && p->is_alive()) {
-    //         switch (p->m_type) {
-    //             case ProjectileType::Hostile:
-    //                 m_player.damage();
-    //                 break;
-    //
-    //             case ProjectileType::Health:
-    //                 m_player.heal();
-    //                 break;
-    //
-    //             case ProjectileType::Bullet:
-    //                 ;
-    //                 break;
-    //         }
-    //         p->destroy();
-    //     }
-    //
-    //     if (p->is_dead())
-    //         p = m_projectiles.erase(p);
-    //     else
-    //         p++;
-    //
-    // }
+    for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
+
+        p->update();
+
+        if (m_player.check_collision(*p) && p->is_alive()) {
+            switch (p->m_type) {
+                case ProjectileType::Hostile:
+                    m_player.damage();
+                    break;
+
+                case ProjectileType::Health:
+                    m_player.heal();
+                    break;
+
+                case ProjectileType::Bullet:
+                    ;
+                    break;
+            }
+            p->destroy();
+        }
+
+        if (p->is_dead())
+            p = m_projectiles.erase(p);
+        else
+            p++;
+
+    }
 
     m_player.update();
     draw_ui();

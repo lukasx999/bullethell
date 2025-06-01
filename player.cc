@@ -4,12 +4,20 @@
 #include "player.hh"
 
 
-Player::Player(raylib::Vector2 position, float radius, int max_health, const raylib::Rectangle &screen)
+
+Player::Player(
+    raylib::Vector2 position,
+    float radius,
+    int max_health,
+    const raylib::Texture2D &projectile_texture,
+    const raylib::Rectangle &screen
+)
     : m_screen(screen)
     , m_position(position)
-    , m_direction(raylib::Vector2 { 1.0f, 0.0f })
+    , m_direction(raylib::Vector2(1.0f, 0.0f))
     , m_radius(radius)
     , m_health(max_health)
+    , m_projectile_texture(projectile_texture)
     , m_start_position(position)
     , m_max_health(max_health)
     , m_interval(0.1f)
@@ -19,7 +27,6 @@ void Player::reset() {
     m_health = m_max_health;
     m_position = m_start_position;
 }
-
 
 void Player::draw_healthbar(raylib::Vector2 center, raylib::Color fg, raylib::Color bg)
 {
@@ -33,16 +40,16 @@ void Player::draw() {
     m_position.DrawCircle(m_radius, BLUE);
     m_position.DrawLine(m_position + m_direction, 5.0f, PURPLE);
 
-    // for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
-    //
-    //     p->update();
-    //
-    //     if (p->is_dead())
-    //         p = m_projectiles.erase(p);
-    //     else
-    //         p++;
-    //
-    // }
+    for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
+
+        p->update();
+
+        if (p->is_dead())
+            p = m_projectiles.erase(p);
+        else
+            p++;
+
+    }
 
 }
 
@@ -52,18 +59,19 @@ void Player::handle_input() {
 
 void Player::update() {
 
-    // if (m_interval.poll()) {
-    //
-    //     Projectile proj(
-    //         { m_position.x, m_position.y },
-    //         m_direction.Normalize(),
-    //         ProjectileType::Bullet,
-    //         m_screen,
-    //         10.0f
-    //     );
-    //
-    //     m_projectiles.push_back(proj);
-    // }
+    if (m_interval.poll()) {
+
+        Projectile proj(
+            { m_position.x, m_position.y },
+            m_direction.Normalize(),
+            ProjectileType::Bullet,
+            m_projectile_texture,
+            m_screen,
+            10.0f
+        );
+
+        m_projectiles.push_back(proj);
+    }
 
     handle_input();
     draw();
@@ -91,10 +99,13 @@ void Player::move(Direction dir) {
             break;
     }
 
-    m_position = m_position.Clamp(
-        raylib::Vector2::Zero(),
-        { m_screen.width, m_screen.height }
-    );
+    // m_position = m_position.Clamp(
+    //     raylib::Vector2::Zero(),
+    //     { m_screen.width, m_screen.height }
+    // );
+
+    m_position.x = std::clamp(m_position.x, 0.0f, m_screen.width);
+    m_position.y = std::clamp(m_position.y, 0.0f, m_screen.height);
 
 }
 

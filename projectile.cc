@@ -10,18 +10,17 @@ Projectile::Projectile(
     raylib::Vector2 origin,
     raylib::Vector2 velocity,
     ProjectileType type,
+    const raylib::Texture2D &texture,
     const raylib::Rectangle &screen,
     float radius
 )
     : m_screen(screen)
     , m_velocity(velocity)
+    , m_texture(texture)
     , m_position(origin)
     , m_radius(radius)
     , m_type(type)
-{
-    m_texture.Load("./assets/circle6a.png");
-    m_texture.GenMipmaps();
-}
+{ }
 
 void Projectile::draw_live() {
     raylib::Color color = m_state_map.at(m_type);

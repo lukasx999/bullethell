@@ -17,7 +17,7 @@ class Projectile {
     raylib::Vector2 m_velocity;
     Timer m_timer { 1.0, 0.1 };
     static constexpr float m_fade_radius_multiplier = 1.5;
-    raylib::Texture2D m_texture;
+    const raylib::Texture2D &m_texture;
     enum class ProjectileState {
         Live,
         Fading,
@@ -38,9 +38,11 @@ public:
         raylib::Vector2 origin,
         raylib::Vector2 velocity,
         ProjectileType type,
+        const raylib::Texture2D &texture,
         const raylib::Rectangle &screen,
         float radius
     );
+
     void update();
     [[nodiscard]] bool is_dead() const;
     [[nodiscard]] bool is_alive() const;

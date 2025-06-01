@@ -20,18 +20,25 @@ class Player {
     raylib::Vector2 m_direction;
     float m_radius;
     int m_health;
+    const raylib::Texture2D &m_projectile_texture;
     const raylib::Vector2 m_start_position;
     const int m_max_health;
     static constexpr int m_heal_amount = 50;
     static constexpr int m_damage_amount = 1;
-    // std::list<Projectile> m_projectiles;
+    std::list<Projectile> m_projectiles;
     Interval m_interval;
 
 public:
     static constexpr int m_healtbar_width = 500;
     static constexpr int m_healtbar_height = 30;
 
-    Player(raylib::Vector2 position, float radius, int max_health, const raylib::Rectangle &screen);
+    Player(
+        raylib::Vector2 position,
+        float radius,
+        int max_health,
+        const raylib::Texture2D &projectile_texture,
+        const raylib::Rectangle &screen
+    );
     void reset();
     void draw_healthbar(raylib::Vector2 center, raylib::Color fg, raylib::Color bg);
     void update();

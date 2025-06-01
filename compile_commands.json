@@ -2,7 +2,7 @@
  {
   "directory": "/home/lukas/code/repos/bullethell",
   "arguments": [
-   "c++",
+   "clang++",
    "-Wall",
    "-Wextra",
    "-std=c++23",
@@ -20,7 +20,7 @@
  {
   "directory": "/home/lukas/code/repos/bullethell",
   "arguments": [
-   "c++",
+   "clang++",
    "-Wall",
    "-Wextra",
    "-std=c++23",
@@ -38,7 +38,7 @@
  {
   "directory": "/home/lukas/code/repos/bullethell",
   "arguments": [
-   "c++",
+   "clang++",
    "-Wall",
    "-Wextra",
    "-std=c++23",
@@ -56,61 +56,7 @@
  {
   "directory": "/home/lukas/code/repos/bullethell",
   "arguments": [
-   "c++",
-   "-Wall",
-   "-Wextra",
-   "-std=c++23",
-   "-pedantic",
-   "-ggdb",
-   "-Og",
-   "-I./raylib-cpp/include/",
-   "-c",
-   "welcome.cc",
-   "-o",
-   "welcome.o"
-  ],
-  "file": "welcome.cc"
- },
- {
-  "directory": "/home/lukas/code/repos/bullethell",
-  "arguments": [
-   "c++",
-   "-Wall",
-   "-Wextra",
-   "-std=c++23",
-   "-pedantic",
-   "-ggdb",
-   "-Og",
-   "-I./raylib-cpp/include/",
-   "-c",
-   "paused.cc",
-   "-o",
-   "paused.o"
-  ],
-  "file": "paused.cc"
- },
- {
-  "directory": "/home/lukas/code/repos/bullethell",
-  "arguments": [
-   "c++",
-   "-Wall",
-   "-Wextra",
-   "-std=c++23",
-   "-pedantic",
-   "-ggdb",
-   "-Og",
-   "-I./raylib-cpp/include/",
-   "-c",
-   "over.cc",
-   "-o",
-   "over.o"
-  ],
-  "file": "over.cc"
- },
- {
-  "directory": "/home/lukas/code/repos/bullethell",
-  "arguments": [
-   "c++",
+   "clang++",
    "-Wall",
    "-Wextra",
    "-std=c++23",
@@ -128,7 +74,7 @@
  {
   "directory": "/home/lukas/code/repos/bullethell",
   "arguments": [
-   "c++",
+   "clang++",
    "-Wall",
    "-Wextra",
    "-std=c++23",
@@ -142,5 +88,23 @@
    "util.o"
   ],
   "file": "util.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "clang++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-I./raylib-cpp/include/",
+   "-c",
+   "states.cc",
+   "-o",
+   "states.o"
+  ],
+  "file": "states.cc"
  }
 ]

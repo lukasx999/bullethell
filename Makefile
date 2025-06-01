@@ -1,4 +1,4 @@
-CXX=c++
+CXX=clang++
 CXXFLAGS=-Wall -Wextra -std=c++23 -pedantic -ggdb -Og -I./raylib-cpp/include/
 LIBS=-lraylib
 
