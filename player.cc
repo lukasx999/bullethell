@@ -7,10 +7,12 @@
 Player::Player(Vector2 position, float radius, int max_health, const Rectangle &screen)
     : m_screen(screen)
     , m_position(position)
+    , m_direction({ 1.0f, 0.0f })
     , m_radius(radius)
     , m_health(max_health)
     , m_start_position(position)
     , m_max_health(max_health)
+    , m_interval(0.1f)
 { }
 
 void Player::reset() {
@@ -27,6 +29,48 @@ void Player::draw_healthbar(Vector2 center, Color fg, Color bg) {
 
 void Player::draw() {
     DrawCircleV(m_position, m_radius, BLUE);
+
+    DrawLineEx(
+        m_position,
+        Vector2Add(m_position, m_direction),
+        5.0f,
+        PURPLE
+    );
+
+    for (auto p=m_projectiles.begin(); p != m_projectiles.end();) {
+
+        p->update();
+
+        if (p->is_dead())
+            p = m_projectiles.erase(p);
+        else
+            p++;
+
+    }
+}
+
+void Player::handle_input() {
+    m_direction = Vector2Subtract(GetMousePosition(), m_position);
+}
+
+void Player::update() {
+
+    if (m_interval.poll()) {
+
+        Projectile proj(
+            { m_position.x, m_position.y },
+            Vector2Normalize(m_direction),
+            ProjectileType::Bullet,
+            m_screen,
+            10.0f
+        );
+
+        m_projectiles.push_back(proj);
+    }
+
+    handle_input();
+    draw();
+
 }
 
 void Player::move(Direction dir) {

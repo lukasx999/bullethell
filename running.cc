@@ -12,9 +12,8 @@ GameRunning::GameRunning(GameState &state, const Rectangle &screen)
 
 void GameRunning::update() {
 
-    // if (IsKeyPressed(KEY_U))
-        if (m_interval.poll())
-            spawn_projectile();
+    if (m_interval.poll())
+        spawn_projectile();
 
     if (!m_player.is_alive()) {
         m_state = GameState::Dead;
@@ -28,15 +27,17 @@ void GameRunning::update() {
 void GameRunning::spawn_projectile() {
     int random = random_range(1, 15);
 
-    Projectile p(
+    Projectile proj(
         { m_screen.width/2.0f, m_screen.height/2.0f },
+        { random_range(-5.0f, 5.0f), random_range(-5.0f, 5.0f) },
         random == 1
         ? ProjectileType::Health
         : ProjectileType::Hostile,
-        m_screen
+        m_screen,
+        random_range(10, 30)
     );
 
-    m_projectiles.push_back(p);
+    m_projectiles.push_back(proj);
 }
 
 void GameRunning::draw() {
@@ -54,6 +55,10 @@ void GameRunning::draw() {
                 case ProjectileType::Health:
                     m_player.heal();
                     break;
+
+                case ProjectileType::Bullet:
+                    ;
+                    break;
             }
             p->destroy();
         }
@@ -65,7 +70,7 @@ void GameRunning::draw() {
 
     }
 
-    m_player.draw();
+    m_player.update();
     draw_ui();
 
 }

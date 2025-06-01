@@ -6,12 +6,12 @@
 #include "projectile.hh"
 #include "util.hh"
 
-Projectile::Projectile(Vector2 origin, ProjectileType type, const Rectangle &screen)
+Projectile::Projectile(Vector2 origin, Vector2 velocity, ProjectileType type, const Rectangle &screen, float radius)
     : m_screen(screen)
-    , m_velocity(random_range(-5, 5), random_range(-5, 5))
+    , m_velocity(velocity)
     , m_texture(LoadTexture("./assets/circle6a.png"))
     , m_position(origin)
-    , m_radius(random_range(10, 30))
+    , m_radius(radius)
     , m_type(type)
 {
     GenTextureMipmaps(&m_texture);

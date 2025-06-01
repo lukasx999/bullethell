@@ -1,0 +1,138 @@
+[
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "main.cc",
+   "-o",
+   "main.o"
+  ],
+  "file": "main.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "projectile.cc",
+   "-o",
+   "projectile.o"
+  ],
+  "file": "projectile.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "player.cc",
+   "-o",
+   "player.o"
+  ],
+  "file": "player.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "welcome.cc",
+   "-o",
+   "welcome.o"
+  ],
+  "file": "welcome.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "paused.cc",
+   "-o",
+   "paused.o"
+  ],
+  "file": "paused.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "over.cc",
+   "-o",
+   "over.o"
+  ],
+  "file": "over.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "running.cc",
+   "-o",
+   "running.o"
+  ],
+  "file": "running.cc"
+ },
+ {
+  "directory": "/home/lukas/code/repos/bullethell",
+  "arguments": [
+   "c++",
+   "-Wall",
+   "-Wextra",
+   "-std=c++23",
+   "-pedantic",
+   "-ggdb",
+   "-Og",
+   "-c",
+   "util.cc",
+   "-o",
+   "util.o"
+  ],
+  "file": "util.cc"
+ }
+]

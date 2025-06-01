@@ -9,6 +9,7 @@
 enum class ProjectileType {
     Hostile,
     Health,
+    Bullet,
 };
 
 class Projectile {
@@ -23,8 +24,9 @@ class Projectile {
         Dead,
     } m_state = ProjectileState::Live;
     const std::unordered_map<ProjectileType, Color> m_state_map {
-        { ProjectileType::Health,  GREEN },
-        { ProjectileType::Hostile, RED   },
+        { ProjectileType::Health,  GREEN  },
+        { ProjectileType::Hostile, RED    },
+        { ProjectileType::Bullet,  PURPLE },
     };
 
 public:
@@ -32,7 +34,7 @@ public:
     float m_radius;
     const ProjectileType m_type;
 
-    Projectile(Vector2 origin, ProjectileType type, const Rectangle &screen);
+    Projectile(Vector2 origin, Vector2 velocity, ProjectileType type, const Rectangle &screen, float radius);
     void update();
     [[nodiscard]] bool is_dead() const;
     [[nodiscard]] bool is_alive() const;

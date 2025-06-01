@@ -88,6 +88,7 @@ void Game::draw() {
     projectile sources:
     - spreading
     - homing
+    - circling projectiles with varying rotation speed
 */
 
 int main() {
