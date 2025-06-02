@@ -35,13 +35,13 @@ private:
 };
 
 Game::Game()
-    : m_window(m_screen.width, m_screen.height, "bullethell")
+    : m_window(m_screen.width, m_screen.height, "bullethell", FLAG_WINDOW_RESIZABLE, LOG_ERROR)
     , m_running(m_state, m_screen)
     , m_welcome(m_state)
     , m_paused(m_state)
     , m_dead(m_state)
 {
-    m_window.SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    HideCursor();
     m_window.SetTargetFPS(60);
 }
 
@@ -76,11 +76,15 @@ void Game::draw() {
     - spreading
     - homing
     - circling projectiles with varying rotation speed
+
+    player:
+    - add cursor clicking effect
+    - cursor crosshair texture
+    - dash to cursor
 */
 
 int main() {
 
-    SetTraceLogLevel(LOG_ERROR);
     Game game;
     game.loop();
 

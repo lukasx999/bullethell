@@ -85,6 +85,8 @@ void GameRunning::draw() {
     m_player.update();
     draw_ui();
 
+    raylib::Mouse::GetPosition().DrawCircle(m_cursor_size, RED);
+
 }
 
 void GameRunning::draw_ui() {

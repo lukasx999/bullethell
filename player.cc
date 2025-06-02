@@ -13,7 +13,6 @@ Player::Player(
     const raylib::Rectangle &screen
 )
     : m_screen(screen)
-    , m_position(position)
     , m_direction(raylib::Vector2(1.0f, 0.0f))
     , m_radius(radius)
     , m_health(max_health)
@@ -21,6 +20,7 @@ Player::Player(
     , m_start_position(position)
     , m_max_health(max_health)
     , m_interval(0.1f)
+    , m_position(position)
 { }
 
 void Player::reset() {
@@ -63,7 +63,7 @@ void Player::update() {
 
         Projectile proj(
             { m_position.x, m_position.y },
-            m_direction.Normalize(),
+            m_direction.Normalize() * m_projectile_speed,
             ProjectileType::Bullet,
             m_projectile_texture,
             m_screen,

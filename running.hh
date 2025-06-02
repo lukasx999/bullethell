@@ -20,6 +20,7 @@ class GameRunning : public IGameState {
     std::list<Projectile> m_projectiles;
     Interval m_interval;
     GameState &m_state;
+    static constexpr float m_cursor_size = 25.0f;
 
 public:
     GameRunning(GameState &state, const raylib::Rectangle &screen);

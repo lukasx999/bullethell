@@ -16,19 +16,20 @@ enum class Direction {
 
 class Player {
     const raylib::Rectangle &m_screen;
-    raylib::Vector2 m_position;
     raylib::Vector2 m_direction;
     float m_radius;
     int m_health;
     const raylib::Texture2D &m_projectile_texture;
     const raylib::Vector2 m_start_position;
     const int m_max_health;
+    static constexpr float m_projectile_speed = 20.0f;
     static constexpr int m_heal_amount = 50;
     static constexpr int m_damage_amount = 1;
     std::list<Projectile> m_projectiles;
     Interval m_interval;
 
 public:
+    raylib::Vector2 m_position;
     static constexpr int m_healtbar_width = 500;
     static constexpr int m_healtbar_height = 30;
 
