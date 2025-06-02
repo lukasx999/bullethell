@@ -67,6 +67,8 @@ void Game::draw() {
 
 // TODO:
 /*
+    make timers in util.hh non-stateful
+
     projectile kinds:
     - hostile
     - healing
