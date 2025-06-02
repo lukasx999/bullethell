@@ -38,9 +38,40 @@ void GameRunning::update() {
 void GameRunning::spawn_projectile() {
     int random = random_range(1, 15);
 
+    raylib::Vector2 proj_pos(m_screen.width/2.0f, m_screen.height/2.0f);
+
+    // // SPREADING
+    // Projectile proj(
+    //     raylib::Vector2(m_screen.width/2.0f, m_screen.height/2.0f),
+    //     raylib::Vector2(random_range(-5.0f, 5.0f), random_range(-5.0f, 5.0f)),
+    //     random == 1
+    //         ? ProjectileType::Health
+    //         : ProjectileType::Hostile,
+    //     m_projectile_texture,
+    //     m_screen,
+    //     random_range(10, 30)
+    // );
+
+    // // HOMING
+    // auto proj_speed = 0.025f;
+    // Projectile proj(
+    //     proj_pos,
+    //     raylib::Vector2((m_player.m_position - proj_pos)*proj_speed),
+    //     random == 1
+    //         ? ProjectileType::Health
+    //         : ProjectileType::Hostile,
+    //     m_projectile_texture,
+    //     m_screen,
+    //     random_range(10, 30)
+    // );
+
+    auto vel = raylib::Vector2::One()
+        .Rotate(Lerp(0, 360, GetTime()/100));
+
+    // CYCLING
     Projectile proj(
-        raylib::Vector2(m_screen.width/2.0f, m_screen.height/2.0f),
-        raylib::Vector2(random_range(-5.0f, 5.0f), random_range(-5.0f, 5.0f)),
+        proj_pos,
+        vel,
         random == 1
             ? ProjectileType::Health
             : ProjectileType::Hostile,
@@ -48,6 +79,10 @@ void GameRunning::spawn_projectile() {
         m_screen,
         random_range(10, 30)
     );
+
+
+
+
 
     m_projectiles.push_back(proj);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <array>
 
 #include <raylib-cpp.hpp>
 
@@ -18,6 +19,9 @@ class GameRunning : public IGameState {
     // projectiles have different speeds, and ones queued up early, might live longer
     // than ones queued up at a later time.
     std::list<Projectile> m_projectiles;
+    // std::array<IProjetilePool&, 1> m_pools {
+    //     HomingProjectiles(),
+    // };
     Interval m_interval;
     GameState &m_state;
     static constexpr float m_cursor_size = 25.0f;

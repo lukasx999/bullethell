@@ -7,14 +7,16 @@ DEPS=projectile.hh       \
      states.hh           \
      running.hh          \
      util.hh             \
-     game.hh
+	 game.hh			 \
+     pool.hh
 
 OBJ=main.o               \
     projectile.o         \
     player.o             \
     states.o             \
     running.o            \
-    util.o
+    util.o 			  	 \
+    pool.o
 
 bullethell: $(OBJ)
 	$(CXX) $(CXXFLAGS) $(LIBS) $^ -o $@
